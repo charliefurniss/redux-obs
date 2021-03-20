@@ -1,25 +1,15 @@
-import logo from './logo.svg';
+import { connect } from 'react-redux';
+
 import './App.css';
+
+import Beers from './components/beers'; // use the ReduxConnected version of the component which is exported as default
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <Beers />
     </div>
   );
 }
 
-export default App;
+export default connect((state) => state.app)(App);
