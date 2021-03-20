@@ -1,31 +1,43 @@
 import React from 'react';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { fetchData } from '../actions';
+import { search } from '../actions';
 import { BeersList } from './beersList';
 
-export function Beers({ beers, status, fetchData }) {
-  console.log({ beers });
+export function Beers({ beers, status, search }) {
   return (
     <>
-      <div className='App-inputs'>
-        <button
-          type='button'
-          onClick={fetchData}
-          disabled={status === 'pending'}
-        >
-          Fetch Beers!
-        </button>
+      <InputContainer>
+        <Input
+          type='text'
+          placeholder='Search beers'
+          onChange={(e) => search(e.target.value)}
+        />
         {status === 'pending' && (
-          <span className='App-spinner'>
-            <img src={'./ajax-loader.gif'} alt='spinner' />
-          </span>
+          <Spinner
+            src={'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}
+            alt='spinner'
+          />
         )}
-      </div>
+      </InputContainer>
       {status === 'success' && <BeersList beers={beers} />}
     </>
   );
 }
+
+const InputContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 96px;
+`;
+
+const Input = styled.input``;
+
+const Spinner = styled.img`
+  height: 96px;
+`;
 
 const mapStateToProps = (state) => {
   return {
@@ -34,4 +46,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { fetchData })(Beers);
+export default connect(mapStateToProps, { search })(Beers);

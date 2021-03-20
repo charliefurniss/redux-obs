@@ -1,19 +1,24 @@
 import { ajax } from 'rxjs/ajax';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, debounceTime } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
 import { concat, of } from 'rxjs';
 
-import { fetchFulfilled, FETCH_DATA, setStatus } from '../actions';
+import { fetchFulfilled, SEARCH, setStatus } from '../actions';
 
 const API = 'https://api.punkapi.com/v2/beers';
+const createSearchURL = (term) =>
+  `${API}?beer_name=${encodeURIComponent(term)}`;
 
 export const fetchBeersEpic = (actions$) => {
   return actions$.pipe(
-    ofType(FETCH_DATA),
-    switchMap(() => {
+    ofType(SEARCH),
+    debounceTime(500),
+    switchMap(({ payload }) => {
       return concat(
         of(setStatus('pending')),
-        ajax.getJSON(API).pipe(map((response) => fetchFulfilled(response)))
+        ajax
+          .getJSON(createSearchURL(payload))
+          .pipe(map((response) => fetchFulfilled(response)))
       );
     })
   );
