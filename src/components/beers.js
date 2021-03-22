@@ -2,10 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { search } from '../actions';
+import { search, cancel } from '../actions';
 import { BeersList } from './beersList';
 
-export function Beers({ beers, status, search }) {
+export function Beers({ beers, messages, status, search, cancel }) {
+  console.log({ messages });
   return (
     <>
       <InputContainer>
@@ -15,13 +16,19 @@ export function Beers({ beers, status, search }) {
           onChange={(e) => search(e.target.value)}
         />
         {status === 'pending' && (
-          <Spinner
-            src={'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}
-            alt='spinner'
-          />
+          <>
+            <button type='button' onClick={cancel}>
+              Cancel
+            </button>
+            <Spinner
+              src={'https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif'}
+              alt='spinner'
+            />
+          </>
         )}
       </InputContainer>
       {status === 'success' && <BeersList beers={beers} />}
+      {status === 'failure' && <p>Oops! {messages[0].text}</p>}
     </>
   );
 }
@@ -43,7 +50,8 @@ const mapStateToProps = (state) => {
   return {
     beers: state.beers.data,
     status: state.beers.status,
+    messages: state.beers.messages,
   };
 };
 
-export default connect(mapStateToProps, { search })(Beers);
+export default connect(mapStateToProps, { search, cancel })(Beers);

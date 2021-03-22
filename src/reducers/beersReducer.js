@@ -1,4 +1,4 @@
-import { FETCH_FULFILLED, SET_STATUS } from '../actions';
+import { FETCH_FULFILLED, SET_STATUS, FETCH_FAILED, RESET } from '../actions';
 
 const initialState = {
   data: [],
@@ -14,11 +14,33 @@ export const beersReducer = (state = initialState, action) => {
       };
     }
 
+    case RESET: {
+      return {
+        ...state,
+        status: 'idle',
+        messages: [],
+      };
+    }
+
     case FETCH_FULFILLED: {
       return {
         ...state,
         status: 'success',
         data: action.payload,
+        messages: [],
+      };
+    }
+
+    case FETCH_FAILED: {
+      return {
+        ...state,
+        status: 'failure',
+        messages: [
+          {
+            type: 'error',
+            text: action.payload,
+          },
+        ],
       };
     }
 
