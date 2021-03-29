@@ -5,6 +5,7 @@ export const FETCH_DATA = 'FETCH_DATA';
 export const SEARCH = 'SEARCH';
 export const CANCEL = 'CANCEL';
 export const RESET = 'RESET';
+export const RANDOM = 'RANDOM';
 
 export const fetchFulfilled = (beers) => {
   return {
@@ -49,5 +50,11 @@ export const cancel = () => {
 export const reset = () => {
   return {
     type: RESET,
+  };
+};
+
+export const random = () => {
+  return {
+    type: RANDOM,
   };
 };

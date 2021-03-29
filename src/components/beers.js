@@ -2,14 +2,32 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { search, cancel } from '../actions';
+import { search, cancel, setConfig } from '../actions';
 import { BeersList } from './beersList';
 
-export function Beers({ beers, messages, status, search, cancel }) {
-  console.log({ messages });
+export function Beers({
+  beers,
+  messages,
+  status,
+  search,
+  cancel,
+  config,
+  setConfig,
+}) {
   return (
     <>
       <InputContainer>
+        <select
+          name='per-page'
+          defaultValue={config.perPage}
+          onChange={(e) => setConfig({ perPage: Number(e.target.value) })}
+        >
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((value) => (
+            <option key={value} value={value}>
+              {value} results
+            </option>
+          ))}
+        </select>
         <Input
           type='text'
           placeholder='Search beers'
@@ -51,7 +69,8 @@ const mapStateToProps = (state) => {
     beers: state.beers.data,
     status: state.beers.status,
     messages: state.beers.messages,
+    config: state.config,
   };
 };
 
-export default connect(mapStateToProps, { search, cancel })(Beers);
+export default connect(mapStateToProps, { search, cancel, setConfig })(Beers);

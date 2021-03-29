@@ -2,10 +2,10 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 
 import { appReducer, beersReducer, configReducer } from './reducers';
-import { fetchBeersEpic } from './epics';
+import { fetchBeersEpic, hydrateEpic, persistEpic } from './epics';
 
 export const configureStore = () => {
-  const rootEpic = combineEpics(fetchBeersEpic);
+  const rootEpic = combineEpics(fetchBeersEpic, persistEpic, hydrateEpic);
 
   const epicMiddleware = createEpicMiddleware();
 
