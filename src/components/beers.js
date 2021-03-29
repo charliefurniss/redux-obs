@@ -2,14 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { search, cancel, setConfig } from '../actions';
+import { cancel, setConfig, random } from '../actions';
 import { BeersList } from './beersList';
 
 export function Beers({
   beers,
   messages,
   status,
-  search,
+  random,
   cancel,
   config,
   setConfig,
@@ -28,11 +28,9 @@ export function Beers({
             </option>
           ))}
         </select>
-        <Input
-          type='text'
-          placeholder='Search beers'
-          onChange={(e) => search(e.target.value)}
-        />
+        <button type='button' onClick={random}>
+          Random
+        </button>
         {status === 'pending' && (
           <>
             <button type='button' onClick={cancel}>
@@ -58,8 +56,6 @@ const InputContainer = styled.div`
   height: 96px;
 `;
 
-const Input = styled.input``;
-
 const Spinner = styled.img`
   height: 96px;
 `;
@@ -73,4 +69,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { search, cancel, setConfig })(Beers);
+export default connect(mapStateToProps, { random, cancel, setConfig })(Beers);

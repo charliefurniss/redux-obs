@@ -11,13 +11,13 @@ import {
   pluck,
 } from 'rxjs/operators';
 import { ofType } from 'redux-observable';
-import { concat, of, fromEvent, merge, race } from 'rxjs';
+import { concat, of, fromEvent, merge, race, forkJoin } from 'rxjs';
 
 import {
   CANCEL,
   fetchFailed,
   fetchFulfilled,
-  SEARCH,
+  RANDOM,
   setStatus,
   reset,
 } from '../actions';
@@ -25,20 +25,24 @@ import {
 const createSearchURL = (apiBase, perPage, term) =>
   `${apiBase}?beer_name=${encodeURIComponent(term)}&per_page=${perPage}`;
 
+const createRandomUrl = (apiBase) => `${apiBase}/random`;
+
 export const fetchBeersEpic = (action$, state$) => {
   return action$.pipe(
-    ofType(SEARCH),
+    ofType(RANDOM),
     debounceTime(500),
-    filter(({ payload }) => payload.trim() !== ''),
     withLatestFrom(state$.pipe(pluck('config'))),
     switchMap(([{ payload }, config]) => {
-      const ajax$ = ajax
-        .getJSON(createSearchURL(config.apiBase, config.perPage, payload))
-        .pipe(
-          delay(5000),
-          map((response) => fetchFulfilled(response)),
-          catchError((err) => of(fetchFailed(err.response.message)))
-        );
+      const reqs = [...Array(config.perPage)].map(() => {
+        return ajax
+          .getJSON(createRandomUrl(config.apiBase, config.perPage, payload))
+          .pipe(pluck(0));
+      });
+
+      const ajax$ = forkJoin(reqs).pipe(
+        map((response) => fetchFulfilled(response)),
+        catchError((err) => of(fetchFailed(err.response.message)))
+      );
 
       const blockers$ = merge(
         action$.pipe(ofType(CANCEL)),
