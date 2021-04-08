@@ -1,6 +1,6 @@
 import { FETCH_FULFILLED, SET_STATUS, FETCH_FAILED, RESET } from '../actions';
 
-const initialState = {
+export const initialState = {
   data: [],
   status: 'idle', // 'idle' | 'pending' | 'success' | 'failure'
 };
